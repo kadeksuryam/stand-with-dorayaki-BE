@@ -20,7 +20,7 @@ const tokoDorayakiSchema = new mongoose.Schema({
     },
     gambar : {
         type : String,
-        default : 'default-toko-dorayaki.png'
+        default : '/assets/toko-dorayaki/default-toko-dorayaki.png'
     }
 }, {timestamps: true})
 
