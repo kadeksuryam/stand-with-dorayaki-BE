@@ -1,0 +1,210 @@
+openapi: 3.0.0
+info:
+  description: |
+    This is an API Documentation for 
+    [Stand With Dorayaki](http://swagger.io) website.
+  version: 1.0.0
+  title: Stand with Dorayaki
+  contact:
+    email: kadeksuryam@gmail.com
+tags:
+  - name: dorayaki
+    description: Operations about dorayaki
+
+paths:
+  /dorayakis:
+    get:
+      tags:
+        - dorayaki
+      summary: Get a list of dorayaki
+      operationId: readAllDorayaki
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/ArrayOfDorayaki'
+    
+    post:
+      tags:
+        - dorayaki
+      summary: Create a dorayaki
+      operationId: createDorayaki
+      requestBody:
+        $ref: '#/components/requestBodies/Dorayaki'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/Dorayaki'
+                 
+  '/dorayakis/{dorayakiId}':
+    get:
+      tags:
+        - dorayaki
+      summary: Get a dorayaki by ID
+      operationId: readOneDorayaki
+      parameters:
+        - name: dorayakiId
+          in: path
+          description: ID of dorayaki that needs to be fetched
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dorayaki'
+        '404':
+          description: dorayaki with the corresponding ID not found
+                
+    put:
+      tags:
+        - dorayaki
+      summary: Update a dorayaki by ID
+      operationId: updateOneDorayaki
+      parameters:
+        - name: dorayakiId
+          in: path
+          description: ID of dorayaki that needs to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                rasa:
+                  type: string
+                deskripsi:
+                  type: string
+                gambar:
+                  type: string
+                  format: binary
+            encoding:
+              gambar:
+                contentType: image/png
+        description: Updated dorayaki object
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  gambar:
+                    type: string
+                  _id:
+                    type: string
+                  rasa:
+                    type: string
+                  deskripsi:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  __v:
+                    type: integer
+                    format: int64
+                example:
+                  gambar: "/assets/dorayaki/1626982814574.f54b474b-9527-4366-8d9a-37a36f7c3f71.png"
+                  _id: "60f9c99e5113bd03ca71f186"
+                  rasa: "manis"
+                  deskripsi: "dorayaki gula merah"
+                  createdAt: "2021-07-22T19:40:14.706Z"
+                  updatedAt: "2021-07-22T20:53:36.763Z"
+                  
+        '404':
+          description: dorayaki with the corresponding ID not found
+          
+    delete:
+      tags:
+        - dorayaki
+      summary: Delete a dorayaki by ID
+      operationId: deleteDorayaki
+      parameters:
+        - name: dorayakiId
+          in: path
+          description: ID of dorayaki that needs to be fetched
+          required: true
+          schema:
+            type: string
+      responses:
+        '404':
+          description: dorayaki with the corresponding ID not found
+      
+      
+
+servers:
+  - url: 'https://virtserver.swaggerhub.com/kadeksuryam/standwithdorayaki/1.0.0'
+  - url: 'http://virtserver.swaggerhub.com/kadeksuryam/standwithdorayaki/1.0.0'
+  
+components:
+  requestBodies:
+    Dorayaki:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - rasa
+            properties:
+              rasa:
+                type: string
+              deskripsi:
+                type: string
+              gambar:
+                type: string
+                format: binary
+          encoding:
+            gambar:
+              contentType: image/png
+      description: Created user object
+      required: true
+      
+  schemas:
+    Dorayaki:
+      type: object
+      properties:
+        gambar:
+          type: string
+        _id:
+          type: string
+        rasa:
+          type: string
+        deskripsi:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+          format: int64
+      example:
+        gambar: "/assets/dorayaki/1626982814574.f54b474b-9527-4366-8d9a-37a36f7c3f71.png"
+        _id: "60f9c99e5113bd03ca71f186"
+        rasa: "manis"
+        deskripsi: "dorayaki ini sangat manis"
+        createdAt: "2021-07-22T19:40:14.706Z"
+        updatedAt: "2021-07-22T19:40:14.706Z"
+        
+    ArrayOfDorayaki:
+      type: array
+      items:
+        $ref: '#/components/schemas/Dorayaki'
+        
