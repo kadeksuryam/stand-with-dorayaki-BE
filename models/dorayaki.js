@@ -11,7 +11,7 @@ const dorayakiSchema = new mongoose.Schema({
     },
     gambar : {
         type : String,
-        default : 'default-dorayaki.png'
+        default : '/assets/dorayaki/default-dorayaki.png'
     }
 }, {timestamps: true})
 
