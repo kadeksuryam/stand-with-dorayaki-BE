@@ -10,6 +10,8 @@ const dorayakiRouter = require('./controllers/dorayaki')
 const assetsRouter = require('./controllers/assets')
 const YAML = require('yamljs')
 const swaggerUi = require('swagger-ui-express')
+const tokoDorayakiRouter = require('./controllers/toko_dorayaki')
+const stokDorayakiRouter = require('./controllers/stok_dorayaki')
 const swaggerDoc = YAML.load('./swagger.yaml')
 
 logger.info('connecting to', config.MONGODB_URI)
@@ -46,6 +48,8 @@ const getCache = (req, res, next) => {
 
 //main endpoints
 app.use('/api/v1/dorayakis', dorayakiRouter(redisClient))
+app.use('/api/v1/toko-dorayakis', tokoDorayakiRouter(redisClient))
+app.use('/api/v1/stok-dorayakis', stokDorayakiRouter(redisClient))
 app.use('/api/v1/assets', assetsRouter)
 app.use('/api/v1/documentation', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
