@@ -1,5 +1,7 @@
 const dorayakiRouter = (redisClient) => {
+    const TokoDorayaki = require('../models/toko_dorayaki')
     const Dorayaki = require('../models/dorayaki')
+    const StokDorayaki = require('../models/stok_dorayaki')
     const router = require('express').Router()
     const path = require('path')
     const { v4: uuidv4 } = require('uuid')
@@ -38,12 +40,24 @@ const dorayakiRouter = (redisClient) => {
         try{
             const { rasa, deskripsi } = req.body
 
-            const newDorayaki = new Dorayaki({
-                rasa, deskripsi, gambar : `/assets/dorayaki/${req.fileName}`
-            })
+            let postData = {rasa, deskripsi}
+
+            if(req.fileName) postData["gambar"] = `/assets/toko-dorayaki/${req.fileName}`
+
+            const newDorayaki = new Dorayaki(postData)
     
             const savedDorayaki = await newDorayaki.save()
-    
+            
+            //When a dorayaki has created, all toko should connect to this dorayaki
+            const tokoDorayakiIDs = (await TokoDorayaki.find({})).map((dorayaki) => dorayaki["_id"])
+            let postStok = []
+
+            for(id of tokoDorayakiIDs){
+                postStok.push({dorayaki: savedDorayaki["_id"], tokoDorayaki: id})
+            }
+            
+            await StokDorayaki.insertMany(postStok)
+            
             res.status(201).json(savedDorayaki)
         } catch(error){
             next(error)
@@ -101,11 +115,14 @@ const dorayakiRouter = (redisClient) => {
             
             //delete from MONGODB
             const delRes = await Dorayaki.findByIdAndDelete(dorayakiID);
-            
+
             if(!delRes) return res.status(404).json({error: 'dorayaki dengan ID tersebut tidak ditemukan'})
             else{
-                //delete from FILE SYSTEM
-                fs.unlinkSync('.' + delRes.gambar)
+                await StokDorayaki.deleteMany({idDorayaki: delRes["_id"]})
+
+                if(delRes.gambar !== "/assets/dorayaki/default-dorayaki.png")
+                    //delete from FILE SYSTEM
+                    fs.unlinkSync('.' + delRes.gambar)
 
                 res.status(200).send({success : 'dorayaki berhasil dihapus'})
             }
