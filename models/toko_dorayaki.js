@@ -10,6 +10,10 @@ const tokoDorayakiSchema = new mongoose.Schema({
         type : String,
         required: [true, 'jalan toko tidak boleh kosong']
     },
+    kabupaten : {
+        type: String,
+        required: [true, 'kabupaten toko tidak boleh kosong']
+    },
     kecamatan : {
         type : String,
         required: [true, 'kecamatan toko tidak boleh kosong']
