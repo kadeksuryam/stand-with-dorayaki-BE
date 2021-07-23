@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint-fix" : "npm run lint -- --fix"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +23,13 @@
     "nodemon": "^2.0.12",
     "redis": "^3.1.2",
     "swagger-ui-express": "^4.1.6",
+    "uuid": "^8.3.2",
     "uuidv4": "^6.2.11",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.23.4"
   }
 }
