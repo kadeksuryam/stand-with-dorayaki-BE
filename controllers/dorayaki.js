@@ -1,4 +1,4 @@
-const dorayakiRouter = (redisClient) => {
+const dorayakiRouter = () => {
     const TokoDorayaki = require('../models/toko_dorayaki')
     const Dorayaki = require('../models/dorayaki')
     const StokDorayaki = require('../models/stok_dorayaki')
@@ -68,6 +68,7 @@ const dorayakiRouter = (redisClient) => {
     router.get('/', async(req, res, next) => {
         try{
             const dorayakis = await Dorayaki.find({})
+
             return res.status(200).json(dorayakis)
         }catch(err){
             next(err);
