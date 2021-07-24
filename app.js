@@ -6,6 +6,7 @@ const cors = require('cors');
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const morgan = require('morgan');
+const seedDB = require('./mongodb/seedDB');
 const config = require('./utils/config');
 const logger = require('./utils/logger');
 const middleware = require('./utils/middleware');
@@ -18,15 +19,20 @@ const swaggerDoc = YAML.load('./swagger.yaml');
 
 logger.info('connecting to', config.MONGODB_URI);
 
-mongoose.connect(config.MONGODB_URI, {
-  useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true,
-})
-  .then(() => {
-    logger.info('connected to MongoDB');
-  })
-  .catch((error) => {
-    logger.error('error connection to MongoDB:', error.message);
-  });
+(
+  async () => {
+    try {
+      await mongoose.connect(config.MONGODB_URI, {
+        useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true,
+      });
+      logger.info('connected to ', config.MONGODB_URI);
+      await seedDB();
+      logger.info('seeding the DB is success');
+    } catch (error) {
+      logger.error('error connection to MongoDB:', error.message);
+    }
+  }
+)();
 
 app.use(cors());
 app.use(express.json());
