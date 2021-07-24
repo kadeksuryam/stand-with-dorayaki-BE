@@ -13,7 +13,7 @@ jobs:
     - name: install eslint dependency
       run: npx install-peerdeps --dev eslint-config-airbnb-base
     - name: run the linter
-      run: npm run eslint .
+      run: npm run lint
     
   pull-and-deploy:
     runs-on: ubuntu-latest
