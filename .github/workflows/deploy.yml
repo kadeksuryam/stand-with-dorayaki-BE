@@ -3,6 +3,18 @@ on:
     branches:
       - master
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'    
+    - name: install eslint dependency
+      run: npx install-peerdeps --dev eslint-config-airbnb-base
+    - name: run the linter
+      run: npm run eslint .
+    
   pull-and-deploy:
     runs-on: ubuntu-latest
     steps:
