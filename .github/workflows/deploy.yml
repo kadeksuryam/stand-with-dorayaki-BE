@@ -13,16 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     
-    - name: Azure Login
-      uses: azure/login@v1
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    - name: Azure CLI script
-      uses: azure/CLI@v1
-      with:
-        azcliversion: 2.0.72
-        inlineScript: |
-          az acr login --name labpro2acr
-          docker-compose up
-          docker-compose push
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: whoami
+
