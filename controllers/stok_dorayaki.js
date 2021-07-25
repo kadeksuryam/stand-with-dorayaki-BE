@@ -34,26 +34,6 @@ const stokDorayakiRouter = () => {
     }
   });
 
-  // Move one Stok to other Stok
-  router.put('/:idStok1/:idStok2', async (req, res, next) => {
-    try {
-      const { deltaStok } = req.body;
-      const { idStok1, idStok2 } = req.params;
-
-      const firstStok = await StokDorayaki.findById(idStok1);
-
-      if (firstStok.stok - deltaStok < 0) next(new Error('jumlah stok setelah dikurangkan haruslah positif'));
-      else {
-        await StokDorayaki.findByIdAndUpdate(idStok1, { $inc: { stok: -deltaStok } });
-        await StokDorayaki.findByIdAndUpdate(idStok2, { $inc: { stok: deltaStok } });
-
-        res.status(200).json({ success: 'stok berhasil dipindahkan' });
-      }
-    } catch (err) {
-      next(err);
-    }
-  });
-
   return router;
 };
 
