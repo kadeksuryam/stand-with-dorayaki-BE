@@ -7,7 +7,7 @@ services:
     ports:
       - 5000:5000
     volumes:
-      - ./:/code
+      - ./:/app
   mongo:
     image: mongo:latest
     container_name: mongodb
