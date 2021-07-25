@@ -14,7 +14,6 @@ const seedDorayaki = async () => {
     ];
 
     for (let i = 0; i < bulkDorayaki.length; i++) {
-      /* eslint-enable no-await-in-loop */
       const postData = bulkDorayaki[i];
       const newDorayaki = new Dorayaki(postData);
 
@@ -28,7 +27,6 @@ const seedDorayaki = async () => {
         postStok.push({ dorayaki: savedDorayaki._id, tokoDorayaki: tokoDorayakiIDs[j] });
       }
       await StokDorayaki.insertMany(postStok);
-      /* eslint-enable no-await-in-loop */
     }
   } catch (err) {
     logger.error(err);
