@@ -4,12 +4,10 @@ const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' });
 };
 
-const errorHandler = (err, req, res) => {
-  logger.info(err.name);
-  if (err.name === 'TokenExpiredError') {
-    return res.status(401).send({ error: 'JWT Token has expired' });
-  }
-  return res.status(400).send({ error: err.message });
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (err, req, res, next) => {
+  logger.info(err.message);
+  res.status(400).send({ error: err.message });
 };
 
 module.exports = {
