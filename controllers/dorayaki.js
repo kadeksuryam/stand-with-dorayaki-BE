@@ -26,9 +26,9 @@ const dorayakiRouter = () => {
     fileFilter: (req, file, cb) => {
       const ext = path.extname(file.originalname);
       if (ext !== '.png') {
-        return cb(new Error('Ekstensi file haruslah png'));
+        req.fileError = 'Ekstensi file haruslah png';
       }
-      return cb(null, true);
+      cb(null, true);
     },
     limits: {
       // 5*2^20 bytes ~ 5 MB Max
@@ -38,27 +38,31 @@ const dorayakiRouter = () => {
 
   router.post('/', upload.single('gambar'), async (req, res, next) => {
     try {
-      const { rasa, deskripsi } = req.body;
+      if (req.fileError) {
+        next(new Error(req.fileError));
+      } else {
+        const { rasa, deskripsi } = req.body;
 
-      const postData = { rasa, deskripsi };
+        const postData = { rasa, deskripsi };
 
-      if (req.fileName) postData.gambar = `/assets/toko-dorayaki/${req.fileName}`;
+        if (req.fileName) postData.gambar = `/assets/dorayaki/${req.fileName}`;
 
-      const newDorayaki = new Dorayaki(postData);
+        const newDorayaki = new Dorayaki(postData);
 
-      const savedDorayaki = await newDorayaki.save();
+        const savedDorayaki = await newDorayaki.save();
 
-      // When a dorayaki has created, all toko should connect to this dorayaki
-      const tokoDorayakiIDs = (await TokoDorayaki.find({})).map((dorayaki) => dorayaki._id);
-      const postStok = [];
+        // When a dorayaki has created, all toko should connect to this dorayaki
+        const tokoDorayakiIDs = (await TokoDorayaki.find({})).map((dorayaki) => dorayaki._id);
+        const postStok = [];
 
-      for (let i = 0; i < tokoDorayakiIDs.length; i++) {
-        postStok.push({ dorayaki: savedDorayaki._id, tokoDorayaki: tokoDorayakiIDs[i] });
+        for (let i = 0; i < tokoDorayakiIDs.length; i++) {
+          postStok.push({ dorayaki: savedDorayaki._id, tokoDorayaki: tokoDorayakiIDs[i] });
+        }
+
+        await StokDorayaki.insertMany(postStok);
+
+        res.status(201).json(savedDorayaki);
       }
-
-      await StokDorayaki.insertMany(postStok);
-
-      res.status(201).json(savedDorayaki);
     } catch (error) {
       next(error);
     }
@@ -91,18 +95,22 @@ const dorayakiRouter = () => {
   // UPDATE A DORAYAKI
   router.put('/:id', upload.single('gambar'), async (req, res, next) => {
     try {
-      const dorayakiID = req.params.id;
-      const { rasa, deskripsi } = req.body;
+      if (req.fileError) {
+        next(new Error(req.fileError));
+      } else {
+        const dorayakiID = req.params.id;
+        const { rasa, deskripsi } = req.body;
 
-      const dataUpdate = {};
-      if (rasa) dataUpdate.rasa = rasa;
-      if (deskripsi) dataUpdate.deskripsi = deskripsi;
-      if (req.fileName) dataUpdate.gambar = `/assets/dorayaki/${req.fileName}`;
+        const dataUpdate = {};
+        if (rasa) dataUpdate.rasa = rasa;
+        if (deskripsi) dataUpdate.deskripsi = deskripsi;
+        if (req.fileName) dataUpdate.gambar = `/assets/dorayaki/${req.fileName}`;
 
-      const updatedDorayaki = await Dorayaki.findByIdAndUpdate(dorayakiID, dataUpdate, { new: true });
+        const updatedDorayaki = await Dorayaki.findByIdAndUpdate(dorayakiID, dataUpdate, { new: true });
 
-      if (!updatedDorayaki) res.status(404).json({ error: 'dorayaki dengan ID tersebut tidak ditemukan' });
-      else res.status(200).json(updatedDorayaki);
+        if (!updatedDorayaki) res.status(404).json({ error: 'dorayaki dengan ID tersebut tidak ditemukan' });
+        else res.status(200).json(updatedDorayaki);
+      }
     } catch (err) {
       next(err);
     }

@@ -26,8 +26,9 @@ const tokoDorayakiRouter = () => {
     fileFilter: (req, file, cb) => {
       const ext = path.extname(file.originalname);
       if (ext !== '.png') {
-        cb(new Error('Ekstensi file haruslah png'));
-      } else cb(null, true);
+        req.fileError = 'Ekstensi file haruslah png';
+      }
+      cb(null, true);
     },
     limits: {
       // 5*2^20 bytes ~ 5 MB Max
@@ -37,30 +38,34 @@ const tokoDorayakiRouter = () => {
 
   router.post('/', upload.single('gambar'), async (req, res, next) => {
     try {
-      const {
-        nama, jalan, kabupaten, kecamatan, provinsi,
-      } = req.body;
-      const postData = {
-        nama, jalan, kabupaten, kecamatan, provinsi,
-      };
+      if (req.fileError) {
+        next(new Error(req.fileError));
+      } else {
+        const {
+          nama, jalan, kabupaten, kecamatan, provinsi,
+        } = req.body;
+        const postData = {
+          nama, jalan, kabupaten, kecamatan, provinsi,
+        };
 
-      if (req.fileName) postData.gambar = `/assets/toko-dorayaki/${req.fileName}`;
+        if (req.fileName) postData.gambar = `/assets/toko-dorayaki/${req.fileName}`;
 
-      const newTokoDorayaki = new TokoDorayaki(postData);
+        const newTokoDorayaki = new TokoDorayaki(postData);
 
-      const savedTokoDorayaki = await newTokoDorayaki.save();
+        const savedTokoDorayaki = await newTokoDorayaki.save();
 
-      // When a toko has created, all dorayaki should connect to this toko
-      const dorayakiIDs = (await Dorayaki.find({})).map((dorayaki) => dorayaki._id);
-      const postStok = [];
+        // When a toko has created, all dorayaki should connect to this toko
+        const dorayakiIDs = (await Dorayaki.find({})).map((dorayaki) => dorayaki._id);
+        const postStok = [];
 
-      for (let i = 0; i < dorayakiIDs.length; i++) {
-        postStok.push({ dorayaki: dorayakiIDs[i], tokoDorayaki: savedTokoDorayaki._id });
+        for (let i = 0; i < dorayakiIDs.length; i++) {
+          postStok.push({ dorayaki: dorayakiIDs[i], tokoDorayaki: savedTokoDorayaki._id });
+        }
+
+        await StokDorayaki.insertMany(postStok);
+
+        res.status(201).json(savedTokoDorayaki);
       }
-
-      await StokDorayaki.insertMany(postStok);
-
-      res.status(201).json(savedTokoDorayaki);
     } catch (error) {
       next(error);
     }
@@ -93,23 +98,27 @@ const tokoDorayakiRouter = () => {
   // UPDATE A TOKO DORAYAKI
   router.put('/:id', upload.single('gambar'), async (req, res, next) => {
     try {
-      const tokoDorayakiID = req.params.id;
-      const {
-        nama, jalan, kabupaten, kecamatan, provinsi,
-      } = req.body;
+      if (req.fileError) {
+        next(new Error(req.fileError));
+      } else {
+        const tokoDorayakiID = req.params.id;
+        const {
+          nama, jalan, kabupaten, kecamatan, provinsi,
+        } = req.body;
 
-      const dataUpdate = {};
-      if (nama) dataUpdate.nama = nama;
-      if (jalan) dataUpdate.jalan = jalan;
-      if (kabupaten) dataUpdate.kabupaten = kabupaten;
-      if (kecamatan) dataUpdate.kecamatan = kecamatan;
-      if (provinsi) dataUpdate.provinsi = provinsi;
-      if (req.fileName) dataUpdate.gambar = `/assets/toko-dorayaki/${req.fileName}`;
+        const dataUpdate = {};
+        if (nama) dataUpdate.nama = nama;
+        if (jalan) dataUpdate.jalan = jalan;
+        if (kabupaten) dataUpdate.kabupaten = kabupaten;
+        if (kecamatan) dataUpdate.kecamatan = kecamatan;
+        if (provinsi) dataUpdate.provinsi = provinsi;
+        if (req.fileName) dataUpdate.gambar = `/assets/toko-dorayaki/${req.fileName}`;
 
-      const updatedTokoDorayaki = await TokoDorayaki.findByIdAndUpdate(tokoDorayakiID, dataUpdate, { new: true });
+        const updatedTokoDorayaki = await TokoDorayaki.findByIdAndUpdate(tokoDorayakiID, dataUpdate, { new: true });
 
-      if (!updatedTokoDorayaki) res.status(404).json({ error: 'toko dorayaki dengan ID tersebut tidak ditemukan' });
-      else res.status(200).json(updatedTokoDorayaki);
+        if (!updatedTokoDorayaki) res.status(404).json({ error: 'toko dorayaki dengan ID tersebut tidak ditemukan' });
+        else res.status(200).json(updatedTokoDorayaki);
+      }
     } catch (err) {
       next(err);
     }
