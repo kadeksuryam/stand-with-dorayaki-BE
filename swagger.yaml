@@ -10,6 +10,12 @@ info:
 tags:
   - name: dorayaki
     description: Operations about dorayaki
+  
+  - name: toko dorayaki
+    description: Operations about toko dorayaki
+    
+  - name: stok dorayaki
+    description: Operations about stok dorayaki
 
 paths:
   /dorayakis:
@@ -24,7 +30,9 @@ paths:
           content:
             application/json:
               schema:
-                 $ref: '#/components/schemas/ArrayOfDorayaki'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dorayaki'
     
     post:
       tags:
@@ -40,6 +48,14 @@ paths:
             application/json:
               schema:
                  $ref: '#/components/schemas/Dorayaki'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
                  
   '/dorayakis/{dorayakiId}':
     get:
@@ -63,7 +79,21 @@ paths:
                 $ref: '#/components/schemas/Dorayaki'
         '404':
           description: dorayaki with the corresponding ID not found
-                
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+        
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
     put:
       tags:
         - dorayaki
@@ -118,16 +148,23 @@ paths:
                   __v:
                     type: integer
                     format: int64
-                example:
-                  gambar: "/assets/dorayaki/1626982814574.f54b474b-9527-4366-8d9a-37a36f7c3f71.png"
-                  _id: "60f9c99e5113bd03ca71f186"
-                  rasa: "manis"
-                  deskripsi: "dorayaki gula merah"
-                  createdAt: "2021-07-22T19:40:14.706Z"
-                  updatedAt: "2021-07-22T20:53:36.763Z"
                   
         '404':
           description: dorayaki with the corresponding ID not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
           
     delete:
       tags:
@@ -142,14 +179,286 @@ paths:
           schema:
             type: string
       responses:
+        '200':
+          description: dorayaki has succefully deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: string   
         '404':
           description: dorayaki with the corresponding ID not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
       
-      
-
+  '/toko-dorayakis':
+    get:
+      tags:
+        - toko dorayaki
+      summary: get all toko dorayaki
+      operationId: readAllTokoDorayaki
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TokoDorayaki'
+  
+    post:
+      description: 
+        Please follow this [Indonesia Daerah API](https://farizdotid.com/blog/dokumentasi-api-daerah-indonesia/) for provinsi, kabupaten, and kecamatan field
+      tags:
+        - toko dorayaki
+      summary: create a toko dorayaki
+      operationId: createTokoDorayaki
+      requestBody:
+        $ref: '#/components/requestBodies/TokoDorayaki'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                 $ref: '#/components/schemas/TokoDorayaki'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+  
+  '/toko-dorayakis/{tokoDorayakiId}':
+    get:
+      tags:
+        - toko dorayaki
+      summary: get a toko dorayaki by id
+      operationId: readTokoDorayaki
+      parameters:
+        - name: tokoDorayakiId
+          in: path
+          description: ID of toko dorayaki that needs to be fetched
+          required: true
+          schema:
+            type: string
+            
+      responses:
+        '200':
+          description: sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokoDorayaki'
+        '404':
+          description: toko dorayaki with the corresponding ID not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string        
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+    put:
+      description: 
+        Please follow this [Indonesia Daerah API](https://farizdotid.com/blog/dokumentasi-api-daerah-indonesia/) for provinsi, kabupaten, and kecamatan field
+      tags:
+        - toko dorayaki
+      summary: Update a toko dorayaki by ID
+      operationId: updateOneTokoDorayaki
+      parameters:
+        - name: tokoDorayakiId
+          in: path
+          description: ID of toko dorayaki that needs to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                nama:
+                  type: string
+                jalan:
+                  type: string
+                kabupaten:
+                  type: string
+                kecamatan:
+                  type: string
+                provinsi:
+                  type: string
+                gambar:
+                  type: string
+                  format: binary
+            encoding:
+              gambar:
+                contentType: image/png
+        required: true
+        description: Updated dorayaki object
+      responses:
+        '200':
+          description: sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokoDorayaki'
+        '404':
+          description: toko dorayaki with the corresponding ID not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+    delete:
+      tags:
+        - toko dorayaki
+      summary: Delete a toko dorayaki by ID
+      operationId: deleteTokoDorayaki
+      parameters:
+        - name: tokoDorayakiId
+          in: path
+          description: ID of toko dorayaki that needs to be fetched
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: toko dorayaki has succefully deleted
+          content:
+            application/json:
+              schema:
+                properties:
+                  success:
+                    type: string          
+        '404':
+          description: toko dorayaki with the corresponding ID not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+          
+  '/stok-dorayakis':
+    get:
+      tags:
+        - stok dorayaki
+      summary: Get stok dorayakis by tokoID or dorayakiID
+      operationId: getStokDorayaki
+      parameters:
+        - name: dorayakiId
+          in: query
+          description: ID of dorayaki that the stok needs to be fetched
+          schema:
+            type: string
+        - name: tokoDorayakiId
+          in: query
+          description: ID of toko dorayaki that the stok needs to be fetched
+          schema:
+            type: string
+      responses:
+        '200':
+          description: sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StokDorayaki'
+  
+  '/stok-dorayakis/{stokId}':
+    put:
+      tags:
+        - stok dorayaki
+      summary: Update a stok dorayaki
+      operationId: updateStokDorayaki
+      description: stok field should be a positive integer number
+      parameters:
+        - name: stokId
+          in: path
+          description: ID of stok dorayaki that needs to be updated
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stok:
+                  type: number
+        required: true
+      responses:
+        '200':
+          description: sucessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StokDorayaki'
+        '404':
+          description: stok dorayaki with the corresponding ID not found
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string        
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                properties:
+                  error:
+                    type: string
+    
 servers:
-  - url: 'https://virtserver.swaggerhub.com/kadeksuryam/standwithdorayaki/1.0.0'
-  - url: 'http://virtserver.swaggerhub.com/kadeksuryam/standwithdorayaki/1.0.0'
+  - url: http://api-stand-with-dorayaki.eastus.cloudapp.azure.com:5000/api/v1/
+    description: Production server
+  - url: http://localhost:5000/api/v1/
+    description: Local server
+  
   
 components:
   requestBodies:
@@ -171,12 +480,43 @@ components:
           encoding:
             gambar:
               contentType: image/png
-      description: Created user object
+      required: true
+      
+    TokoDorayaki:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - nama
+              - jalan
+              - kabupaten
+              - kecamatan
+              - provinsi
+            properties:
+              nama:
+                type: string
+              jalan:
+                type: string
+              kabupaten:
+                type: string
+              kecamatan:
+                type: string
+              provinsi:
+                type: string
+              gambar:
+                type: string
+                format: binary
+          encoding:
+            gambar:
+              contentType: image/png
       required: true
       
   schemas:
     Dorayaki:
       type: object
+      required:
+      - rasa
       properties:
         gambar:
           type: string
@@ -195,16 +535,60 @@ components:
         __v:
           type: integer
           format: int64
-      example:
-        gambar: "/assets/dorayaki/1626982814574.f54b474b-9527-4366-8d9a-37a36f7c3f71.png"
-        _id: "60f9c99e5113bd03ca71f186"
-        rasa: "manis"
-        deskripsi: "dorayaki ini sangat manis"
-        createdAt: "2021-07-22T19:40:14.706Z"
-        updatedAt: "2021-07-22T19:40:14.706Z"
-        
-    ArrayOfDorayaki:
-      type: array
-      items:
-        $ref: '#/components/schemas/Dorayaki'
-        
+    
+    TokoDorayaki:
+      type: object
+      required:
+        - nama
+        - jalan
+        - kabupaten
+        - kecamatan
+        - provinsi
+      properties:
+        _id:
+          type: string
+        nama:
+          type: string
+        jalan:
+          type: string
+        kabupaten:
+          type: string
+        kecamatan:
+          type: string
+        provinsi:
+          type: string
+        gambar:
+          type: string 
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+          format: int64
+          
+    StokDorayaki:
+      type: object
+      required:
+      - dorayaki
+      - tokoDorayaki
+      properties:
+        _id:
+          type: string
+        dorayaki:
+          $ref: '#/components/schemas/Dorayaki'
+        tokoDorayaki:
+          type: string
+        stok:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: integer
+          format: int64
