@@ -10,7 +10,7 @@ const seedDorayaki = async () => {
       { rasa: 'oreo', deskripsi: 'merupakan campuran dari beberapa oreo', gambar: '/assets/dorayaki/dorayaki-oreo.png' },
       { rasa: 'strawberry', deskripsi: 'merupakan campuran buah strawberry dan coklat', gambar: '/assets/dorayaki/dorayaki-strawberry.png' },
       { rasa: 'ice cream', deskripsi: 'merupakan campuran dari beberapa ice cream', gambar: '/assets/dorayaki/dorayaki-ice-cream.png' },
-      { rasa: 'matcha', deskripsi: 'memiliki rasa matcha yang pekat', gambar: '/assets/dorayaki/dorayaki-matcha' },
+      { rasa: 'matcha', deskripsi: 'memiliki rasa matcha yang pekat', gambar: '/assets/dorayaki/dorayaki-matcha.png' },
     ];
 
     for (let i = 0; i < bulkDorayaki.length; i++) {
