@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const PORT = 5000;
+const PORT = 80;
 let MONGODB_URI = 'mongodb://mongodb:27017';
 
 if (process.env.NODE_ENV === 'development') {
