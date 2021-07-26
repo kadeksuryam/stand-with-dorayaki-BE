@@ -49,7 +49,7 @@ app.use('/api/v1/assets', assetsRouter);
 app.use('/api/v1/documentation', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 app.get('*', (req, res) => {
-  res.sendFile('index.html', { root: 'build' });
+  res.sendFile('index.html', { root: 'dist' });
 });
 
 app.use(middleware.unknownEndpoint);
