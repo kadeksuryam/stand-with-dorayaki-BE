@@ -36,6 +36,7 @@ logger.info('connecting to', config.MONGODB_URI);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('dist'));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan('combined'));
@@ -46,6 +47,10 @@ app.use('/api/v1/toko-dorayakis', tokoDorayakiRouter());
 app.use('/api/v1/stok-dorayakis', stokDorayakiRouter());
 app.use('/api/v1/assets', assetsRouter);
 app.use('/api/v1/documentation', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+
+app.get('*', (req, res) => {
+  res.sendFile('index.html', { root: 'build' });
+});
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
