@@ -3,7 +3,7 @@ info:
   description: |
     This is an API Documentation for 
     [Stand With Dorayaki](http://swagger.io) website.
-  version: 1.0.0
+  version: 1.0.1
   title: Stand with Dorayaki
   contact:
     email: kadeksuryam@gmail.com
@@ -454,9 +454,9 @@ paths:
                     type: string
     
 servers:
-  - url: http://api-stand-with-dorayaki.eastus.cloudapp.azure.com:5000/api/v1/
+  - url: http://stand-with-dorayaki.eastus.cloudapp.azure.com/api/v1
     description: Production server
-  - url: http://localhost:5000/api/v1/
+  - url: http://localhost/api/v1/
     description: Local server
   
   
