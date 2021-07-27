@@ -134,7 +134,7 @@ const tokoDorayakiRouter = () => {
 
       if (!delRes) res.status(404).json({ error: 'toko dorayaki dengan ID tersebut tidak ditemukan' });
       else {
-        await StokDorayaki.deleteMany({ idTokoDorayaki: delRes._id });
+        await StokDorayaki.deleteMany({ tokoDorayaki: delRes._id });
         // delete from FILE SYSTEM
         if (delRes.gambar !== '/assets/toko-dorayaki/default-toko-dorayaki.png') {
           fs.unlinkSync(`.${delRes.gambar}`);
