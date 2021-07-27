@@ -15,7 +15,14 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd stand-with-dorayaki-BE/
+          rm -rf dist
           git pull
+          cd ../stand-with-dorayaki-FE/
+          git pull
+          npm install
+          npm run build
+          cp -a ./dist ../stand-with-dorayaki-BE/
+          cd ../stand-with-dorayaki-BE/
           sudo docker-compose down
           sudo docker-compose build
           sudo docker-compose up -d
