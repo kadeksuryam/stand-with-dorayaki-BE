@@ -6,9 +6,9 @@ const stokDorayakiRouter = () => {
   router.get('/', async (req, res, next) => {
     try {
       const query = {};
-      const { idDorayaki, idToko } = req.query;
-      if (idDorayaki) query.dorayaki = idDorayaki;
-      if (idToko) query.tokoDorayaki = idToko;
+      const { dorayakiId, tokoDorayakiId } = req.query;
+      if (dorayakiId) query.dorayaki = dorayakiId;
+      if (tokoDorayakiId) query.tokoDorayaki = tokoDorayakiId;
 
       const stokToko = (await StokDorayaki.find(query).populate('dorayaki'));
 
